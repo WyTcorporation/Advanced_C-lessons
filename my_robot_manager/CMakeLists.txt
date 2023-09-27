@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(exercises_unit_2)
+project(my_robot_manager)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -8,7 +8,6 @@ project(exercises_unit_2)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  robot_commander
   roscpp
 )
 
@@ -102,10 +101,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES exercises_unit_2
-#  CATKIN_DEPENDS robot_commander roscpp
-#  DEPENDS system_lib
+ INCLUDE_DIRS include/${PROJECT_NAME}/
+  LIBRARIES my_robot_manager
+  CATKIN_DEPENDS roscpp nav_msgs
+  #DEPENDS system_lib
 )
 
 ###########
@@ -115,26 +114,22 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(robot_position_as_array src/robot_position_as_array.cpp)
-target_link_libraries(robot_position_as_array ${catkin_LIBRARIES})
-
-add_executable(robot_heading_as_vector src/robot_heading_as_vector.cpp)
-target_link_libraries(robot_heading_as_vector ${catkin_LIBRARIES})
-
-add_executable(robot_heading_as_deque src/robot_heading_as_deque.cpp)
-target_link_libraries(robot_heading_as_deque ${catkin_LIBRARIES})
-
-add_executable(lists src/lists.cpp)
-target_link_libraries(lists ${catkin_LIBRARIES})
-
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/exercises_unit_2.cpp
+#   src/${PROJECT_NAME}/my_robot_manager.cpp
 # )
+
+add_library(${PROJECT_NAME}_lib
+   src/robot_manager.cpp
+ )
+
+ # add the executable
+add_executable(robot_manager_node src/robot_manager_node.cpp src/robot_manager.cpp)
+target_link_libraries(robot_manager_node ${catkin_LIBRARIES} my_robot_manager_lib)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -144,7 +139,7 @@ target_link_libraries(lists ${catkin_LIBRARIES})
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/exercises_unit_2_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/my_robot_manager_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -208,7 +203,7 @@ target_link_libraries(lists ${catkin_LIBRARIES})
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_exercises_unit_2.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_my_robot_manager.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
